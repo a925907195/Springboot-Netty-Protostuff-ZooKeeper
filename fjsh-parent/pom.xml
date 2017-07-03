@@ -20,6 +20,7 @@
   	<module>fjsh-rpc-service</module>  
     <module>fjsh-rpc-server</module>
     <module>fjsh-rpc-client</module>
+    <module>fjsh-rpc-client-demo</module>
     <module>fjsh-rpc-common</module>
    <module>fjsh-rpc-statistic</module>
     <module>fjsh-rpc-springboot-service-impl</module>

@@ -9,13 +9,14 @@ import com.fjsh.rpc.statistic.service.IstatisticFacet;
 /** 
 * @ClassName: StatisticThread 
 * @Description:使用方法：
+* 项目中只需要设置自己的统计枚举类型，或者直接在sIstatisticFacet.setFacet中填入对应的统计数据也可。
 * 在scfclient处初始化启动		new Thread(new StatisticThread()).start();
 * 在需要统计的地方
 * private static IstatisticFacet sIstatisticFacet=StatisticThread.getStatisticFacetService();
 * 在需要统计的地方写入
-* sIstatisticFacet.setFacet(AITagStatusEnums.exceptabtest.getType(), end-abtesttime);
-sIstatisticFacet.setFacet(AITagStatusEnums.alltime.getType(), end-start);
-sIstatisticFacet.setFacet(AITagStatusEnums.alltimeavg.getType(), 1l);
+* sIstatisticFacet.setFacet(AITagStatusEnums.exceptabtest.getType(),AITagStatusEnums.exceptabtest.getDescription(), end-abtesttime);
+sIstatisticFacet.setFacet(AITagStatusEnums.alltime.getType(),AITagStatusEnums.exceptabtest.getDescription(), end-start);
+sIstatisticFacet.setFacet(AITagStatusEnums.alltimeavg.getType(),AITagStatusEnums.exceptabtest.getDescription(), 1l);
 程序会每隔一分钟在日志中打印总的请求量以及请求的平均耗时等信息
 * @author fujiansheng@58ganji.com 
 * @date 2017年3月20日 上午10:41:22 

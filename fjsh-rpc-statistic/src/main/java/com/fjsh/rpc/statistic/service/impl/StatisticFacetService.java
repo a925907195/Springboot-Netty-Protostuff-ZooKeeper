@@ -1,11 +1,14 @@
 package com.fjsh.rpc.statistic.service.impl;
 
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.fjsh.rpc.statistic.enums.AIAbtestStatusEnums;
+import com.fjsh.rpc.statistic.points.AbstractStatisticPoint;
+import com.fjsh.rpc.statistic.points.PointEntry;
+import com.fjsh.rpc.statistic.points.StatisticStatusEnums;
 import com.fjsh.rpc.statistic.service.IstatisticFacet;
 
 public class StatisticFacetService implements IstatisticFacet {
@@ -18,13 +21,17 @@ public class StatisticFacetService implements IstatisticFacet {
 	public void setFacetConcurrent(ConcurrentHashMap<String, Long> facetConcurrent) {
 		this.facetConcurrent = facetConcurrent;
 	}
-
-	public void setFacet(String point, long times) {
+	public void setFacet(String point,String desc, long times) {
 		// TODO Auto-generated method stub
 		if(null==point||point.trim().equals(""))
 		{
 			return ;
 		}
+		if(!facetConcurrent.contains(point))
+		{
+			PointEntry pointEntry=new PointEntry(point, desc);
+			AbstractStatisticPoint.StaticPoint.put(point, pointEntry);
+		}		
 		Long temp=facetConcurrent.get(point);
 		temp=temp==null?0:temp;
 		facetConcurrent.put(point, temp+times);
@@ -34,18 +41,19 @@ public class StatisticFacetService implements IstatisticFacet {
 		// TODO Auto-generated method stub
 		StringBuilder sBuffer=new StringBuilder();
 		//进行平均值处理
-		Long count=facetConcurrent.get(AIAbtestStatusEnums.alltimeavg.getType());
-		count=count==null?1:count;		 
-       for (AIAbtestStatusEnums status : AIAbtestStatusEnums.values()) {    	   
-    	   if(null!=facetConcurrent.get(status.getType()))
+		Long count=facetConcurrent.get(StatisticStatusEnums.alltimeavg.getType());
+		count=count==null?1:count;	
+		Iterator<java.util.Map.Entry<String, PointEntry>> pointIterable= AbstractStatisticPoint.StaticPoint.entrySet().iterator();
+       for (java.util.Map.Entry<String, PointEntry> entry:AbstractStatisticPoint.StaticPoint.entrySet()) { 
+    	   if(null!=facetConcurrent.get(entry.getKey()))
     	   {
-    		   if(status.getType().equals("0-1"))
+    		   if(entry.getKey().equals("0-1"))
     		   {
     			   //单独统计次数
-        		   sBuffer.append(status.getDescription()+":"+facetConcurrent.get(status.getType())+"次  ");
+        		   sBuffer.append(entry.getValue().getDescription()+":"+facetConcurrent.get(entry.getValue().getType())+"次  ");
         		   continue;
     		   }    		   
-    		   sBuffer.append(status.getDescription()+":"+facetConcurrent.get(status.getType())+"ms  "+status.getDescription()+"(平均耗时):"+facetConcurrent.get(status.getType())/count+"ms  ");
+    		   sBuffer.append(entry.getValue().getDescription()+":"+facetConcurrent.get(entry.getValue().getType())+"ms  "+entry.getValue().getDescription()+"(平均耗时):"+facetConcurrent.get(entry.getValue().getType())/count+"ms  ");
     	   }			
 		}
        logger.info(sBuffer.toString());

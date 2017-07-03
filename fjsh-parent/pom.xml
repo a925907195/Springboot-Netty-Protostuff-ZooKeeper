@@ -17,7 +17,7 @@
   <dependencies>
   </dependencies>
   <modules>
-  	<module>fjsh-rpc-service</module>  
+   <module>fjsh-rpc-service</module>  
     <module>fjsh-rpc-server</module>
     <module>fjsh-rpc-client</module>
     <module>fjsh-rpc-client-demo</module>
